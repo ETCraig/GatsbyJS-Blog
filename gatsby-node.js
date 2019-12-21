@@ -11,3 +11,27 @@ exports.onCreateNode = ({ actions, getNode, node }) => {
         });
     }
 }
+
+exports.createPages = ({ actions, graphql }) => {
+    const { createPage } = actions;
+    return graphql(`
+        query {
+            allMarkdownRemark {
+                edges {
+                    node {
+                        fields {
+                            slug
+                        }
+                    }
+                }
+            }
+        }
+    `).then(result => {
+        result.data.allMarkdownRemark.edges.forEach(({node}) => {
+            createPage({
+                path: node.fields.slug,
+                component: ``
+            });
+        })
+    })
+}
